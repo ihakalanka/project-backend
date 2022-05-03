@@ -11,3 +11,9 @@ type User struct {
 	Password  string `json:"password"`
 	Role      string `json:"role"`
 }
+
+type PasswordReset struct {
+	Id    uint
+	Email string
+	Token string `gorm:"unique"`
+}
