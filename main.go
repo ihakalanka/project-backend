@@ -14,7 +14,9 @@ func main() {
 	app.Use(cors.New(cors.Config{
 		AllowCredentials: true,
 		AllowOrigins:     "*",
+		
 	}))
 	routes.Route(app)
+	routes.Categoryroute(app)
 	log.Fatal(app.Listen(":8080"))
 }
