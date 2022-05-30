@@ -6,6 +6,9 @@ import (
 )
 
 func Categoryroute(app *fiber.App) {
-	app.Get("/getCategory",admincontrollers.Get)
-	app.Post("/createCategory",admincontrollers.Post)
+	app.Get("/getCategory", admincontrollers.Getcat)
+	app.Post("/createCategory", admincontrollers.Postcat)
+	app.Get("/getCategoryByid/:id", admincontrollers.Getcatid)
+	app.Delete("/deleteCategory/:id", admincontrollers.Deletecat)
+	app.Put("updateCategory/:id", admincontrollers.Updatecat)
 }
