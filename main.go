@@ -18,5 +18,6 @@ func main() {
 	}))
 	routes.Route(app)
 	routes.Categoryroute(app)
+	routes.Productroute(app)
 	log.Fatal(app.Listen(":8080"))
 }

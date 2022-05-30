@@ -48,7 +48,7 @@ func Deletecat(c *fiber.Ctx) error {
 				"message": "error in delete category",
 			})
 		}
-	db.Delete(&category)
+	db.Unscoped().Delete(&category)
 		return c.JSON(fiber.Map{
 			"status":  "success",
 			"message": "Category data deleted",
@@ -58,7 +58,7 @@ func Updatecat(c *fiber.Ctx) error {
 	db := database.DB
 	var category adminData.Category
 	id := c.Params("id")
-	
+		
 		err := c.BodyParser(&category)
 		if err != nil {
 			return c.JSON(fiber.Map{
@@ -74,6 +74,7 @@ func Updatecat(c *fiber.Ctx) error {
 			return c.JSON(fiber.Map{
 			"status":  "success",
 			"message": "category found",
+			"error": err,
 			"data":    category,
 		})
 }
