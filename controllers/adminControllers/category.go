@@ -75,6 +75,6 @@ func Updatecat(c *fiber.Ctx) error {
 			"status":  "success",
 			"message": "category found",
 			"error": err,
-			"data":    category,
+			"data":  category,
 		})
 }

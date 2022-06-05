@@ -31,7 +31,7 @@ func Getproduct(c *fiber.Ctx) error {
 
 func Getproductid(c *fiber.Ctx) error {
 	db := database.DB
-	id := c.Params(":id")
+	id := c.Params("id")
 	var product sellerData.Productdata
 	db.Find(&product, id)
 	return c.JSON(product)
