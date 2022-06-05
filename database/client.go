@@ -1,15 +1,18 @@
 package database
 
 import (
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"main.go/models"
+	"os"
 )
 
 var DB *gorm.DB
 
 func Connect() {
-	dsn := "root:iha075@tcp(127.0.0.1:3306)/projectTest?charset=utf8mb4&parseTime=True&loc=Local"
+	godotenv.Load()
+	dsn := os.Getenv("DSN")
 	connection, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
