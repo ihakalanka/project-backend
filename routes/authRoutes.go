@@ -14,5 +14,7 @@ func Route(app *fiber.App) {
 	app.Post("/api/logout", controllers.Logout)
 	app.Post("/api/forgot", controllers.Forgot)
 	app.Post("/api/reset", controllers.Reset)
-	
+
+	app.Get("/api/token", controllers.TokenClaims)
+
 }
