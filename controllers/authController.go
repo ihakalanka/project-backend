@@ -205,7 +205,6 @@ func Logout(c *fiber.Ctx) error {
 }
 
 func VerifyToken(c *fiber.Ctx) error {
-
 	token := c.Cookies("jwt")
 	claims := jwt.MapClaims{}
 	_, err := jwt.ParseWithClaims(token, claims, keyFunc)
@@ -243,4 +242,18 @@ func VerifyToken(c *fiber.Ctx) error {
 func keyFunc(*jwt.Token) (interface{}, error) {
 	SecretKey := os.Getenv("SECRETKEY")
 	return []byte(SecretKey), nil
+}
+
+func TokenClaims(c *fiber.Ctx) error {
+	tokenString := c.Cookies("jwt")
+	claims := jwt.MapClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, keyFunc)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err,
+		})
+	}
+
+	return c.JSON(token.Claims)
 }
