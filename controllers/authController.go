@@ -203,3 +203,44 @@ func Logout(c *fiber.Ctx) error {
 		"message": "success",
 	})
 }
+
+func VerifyToken(c *fiber.Ctx) error {
+
+	token := c.Cookies("jwt")
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(token, claims, keyFunc)
+
+	if err != nil {
+		return c.Status(fiber.StatusGatewayTimeout).JSON(fiber.Map{
+			"status":  "error",
+			"message": "token expired",
+		})
+	}
+
+	if token == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Token is empty, unauthenticated",
+		})
+	}
+
+	email, ok := claims["email"]
+	if !ok {
+		panic("Couldn't parse email as string")
+	}
+
+	var user models.User
+	if err := database.DB.Find(&user, "email = ?", email).Error; err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "Error",
+			"message": "There is an error in finding email method",
+		})
+	}
+
+	return c.Next()
+}
+
+func keyFunc(*jwt.Token) (interface{}, error) {
+	SecretKey := os.Getenv("SECRETKEY")
+	return []byte(SecretKey), nil
+}
