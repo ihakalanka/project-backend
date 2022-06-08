@@ -162,7 +162,7 @@ func Login(c *fiber.Ctx) error {
 		Email: user.Email,
 		Role:  user.Role,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * 1).Unix(),
 		},
 	}
 
@@ -179,7 +179,7 @@ func Login(c *fiber.Ctx) error {
 	cookie := fiber.Cookie{
 		Name:     "jwt",
 		Value:    tokenString,
-		Expires:  time.Now().Add(time.Hour * 2),
+		Expires:  time.Now().Add(time.Minute * 1),
 		HTTPOnly: true,
 	}
 
@@ -223,10 +223,7 @@ func VerifyToken(c *fiber.Ctx) error {
 		})
 	}
 
-	email, ok := claims["email"]
-	if !ok {
-		panic("Couldn't parse email as string")
-	}
+	email, _ := claims["email"]
 
 	var user models.User
 	if err := database.DB.Find(&user, "email = ?", email).Error; err != nil {
@@ -251,7 +248,8 @@ func TokenClaims(c *fiber.Ctx) error {
 
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err,
+			"error":   err,
+			"message": "Error in token claims method",
 		})
 	}
 
