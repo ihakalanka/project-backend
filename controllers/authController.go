@@ -223,10 +223,7 @@ func VerifyToken(c *fiber.Ctx) error {
 		})
 	}
 
-	email, ok := claims["email"]
-	if !ok {
-		panic("Couldn't parse email as string")
-	}
+	email, _ := claims["email"]
 
 	var user models.User
 	if err := database.DB.Find(&user, "email = ?", email).Error; err != nil {
@@ -251,7 +248,8 @@ func TokenClaims(c *fiber.Ctx) error {
 
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err,
+			"error":   err,
+			"message": "Error in token claims method",
 		})
 	}
 
