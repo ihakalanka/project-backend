@@ -9,7 +9,6 @@ import (
 	"main.go/database"
 	"main.go/models"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -119,8 +118,21 @@ func verifyPassword(password string) error {
 	return nil
 }
 
+type Claims struct {
+	Id             uint
+	Email          string
+	Role           string
+	StandardClaims jwt.StandardClaims
+}
+
+func (c Claims) Valid() error {
+	//TODO implement me
+	panic("implement me")
+}
+
 func Login(c *fiber.Ctx) error {
 	godotenv.Load()
+	SecretKey := os.Getenv("SECRETKEY")
 	var data map[string]string
 	if err := c.BodyParser(&data); err != nil {
 		return err
@@ -140,17 +152,22 @@ func Login(c *fiber.Ctx) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(data["password"])); err != nil {
 		c.Status(fiber.StatusBadRequest)
 		return c.JSON(fiber.Map{
+			"status":  "Error",
 			"message": "incorrect password",
 		})
 	}
 
-	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		Issuer:    strconv.Itoa(int(user.Id)),
-		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-	})
+	claims := &Claims{
+		Id:    user.Id,
+		Email: user.Email,
+		Role:  user.Role,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
+		},
+	}
 
-	SecretKey := os.Getenv("SECRET_KEY")
-	token, err := claims.SignedString([]byte(SecretKey))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(SecretKey))
 
 	if err != nil {
 		c.Status(fiber.StatusInternalServerError)
@@ -161,14 +178,14 @@ func Login(c *fiber.Ctx) error {
 
 	cookie := fiber.Cookie{
 		Name:     "jwt",
-		Value:    token,
-		Expires:  time.Now().Add(time.Hour * 24),
+		Value:    tokenString,
+		Expires:  time.Now().Add(time.Hour * 2),
 		HTTPOnly: true,
 	}
 
 	c.Cookie(&cookie)
 
-	return c.JSON(fiber.Map{
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message": "success",
 	})
 }
@@ -185,4 +202,58 @@ func Logout(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "success",
 	})
+}
+
+func VerifyToken(c *fiber.Ctx) error {
+	token := c.Cookies("jwt")
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(token, claims, keyFunc)
+
+	if err != nil {
+		return c.Status(fiber.StatusGatewayTimeout).JSON(fiber.Map{
+			"status":  "error",
+			"message": "token expired",
+		})
+	}
+
+	if token == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  "error",
+			"message": "Token is empty, unauthenticated",
+		})
+	}
+
+	email, ok := claims["email"]
+	if !ok {
+		panic("Couldn't parse email as string")
+	}
+
+	var user models.User
+	if err := database.DB.Find(&user, "email = ?", email).Error; err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "Error",
+			"message": "There is an error in finding email method",
+		})
+	}
+
+	return c.Next()
+}
+
+func keyFunc(*jwt.Token) (interface{}, error) {
+	SecretKey := os.Getenv("SECRETKEY")
+	return []byte(SecretKey), nil
+}
+
+func TokenClaims(c *fiber.Ctx) error {
+	tokenString := c.Cookies("jwt")
+	claims := jwt.MapClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, keyFunc)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err,
+		})
+	}
+
+	return c.JSON(token.Claims)
 }
