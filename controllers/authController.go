@@ -162,7 +162,7 @@ func Login(c *fiber.Ctx) error {
 		Email: user.Email,
 		Role:  user.Role,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * 1).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
 		},
 	}
 
@@ -179,7 +179,7 @@ func Login(c *fiber.Ctx) error {
 	cookie := fiber.Cookie{
 		Name:     "jwt",
 		Value:    tokenString,
-		Expires:  time.Now().Add(time.Minute * 1),
+		Expires:  time.Now().Add(time.Hour * 2),
 		HTTPOnly: true,
 	}
 
