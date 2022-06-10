@@ -7,5 +7,5 @@ import (
 type Role struct{
 	gorm.Model
 	Id int `gorm:"primaryKey" json:"id"`
-	RoleName string `json:"rolename"`
+	RoleName string `gorm:"unique" json:"rolename"`
 }

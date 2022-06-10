@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gofiber/fiber/v2"
 	"main.go/controllers/admincontrollers"
+	"main.go/controllers/sellercontroller"
 )
 func Roleroute(app *fiber.App){
 	app.Get("/getRole", admincontrollers.Getrole)
@@ -10,4 +11,5 @@ func Roleroute(app *fiber.App){
 	app.Get("/getRoleId/:id",admincontrollers.Getroleid)
 	app.Delete("/deleteRole/:id", admincontrollers.Deleterole)
 	app.Put("updateRole/:id", admincontrollers.Updaterole)
+	app.Get("/getUser",sellercontroller.GetAllSellers)
 }
