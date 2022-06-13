@@ -102,7 +102,7 @@ func Updaterole(c *fiber.Ctx) error {
 				"data":    err,
 			})
 		}
-		err = db.Find(&role2, "role_name = ?", role.RoleName).Error
+		err = db.Find(&role2, "role_name = ?", role.RoleName).Error//*
 	 
 	if err != nil {
 		return c.JSON(fiber.Map{
@@ -117,7 +117,7 @@ func Updaterole(c *fiber.Ctx) error {
 				"status":  "error",
 				"message": "Entered role is exist.",
 			}) 
-		}
+		}//*
 
 		db.Save(&role)
 			return c.JSON(fiber.Map{

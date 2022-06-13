@@ -12,4 +12,6 @@ func Roleroute(app *fiber.App){
 	app.Delete("/deleteRole/:id", admincontrollers.Deleterole)
 	app.Put("updateRole/:id", admincontrollers.Updaterole)
 	app.Get("/getUser",sellercontroller.GetAllSellers)
+	app.Delete("deleteUser/:id",sellercontroller.DeleteSeller)
+	app.Put("/updateUser/:id",sellercontroller.UpdateSeller)
 }
