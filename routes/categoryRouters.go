@@ -2,12 +2,12 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"main.go/controllers"
+	// "main.go/controllers"
 	"main.go/controllers/admincontrollers"
 )
 
 func Categoryroute(app *fiber.App) {
-	app.Use(controllers.VerifyToken)
+	// app.Use(controllers.VerifyToken)
 
 	app.Get("/getCategory", admincontrollers.Getcat)
 	app.Post("/createCategory", admincontrollers.Postcat)
