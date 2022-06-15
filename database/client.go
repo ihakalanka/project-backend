@@ -1,12 +1,14 @@
 package database
 
 import (
+	"os"
+
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"main.go/models"
-	"os"
 	"main.go/models/adminData"
+	"main.go/models/merchantData"
 	"main.go/models/sellerData"
 )
 
@@ -27,6 +29,6 @@ func Connect() {
 	connection.AutoMigrate(&adminData.Category{})
 	connection.AutoMigrate(&sellerData.Productdata{})
 	connection.AutoMigrate(&adminData.Role{})
-	
+	connection.AutoMigrate(&merchantData.Merchantdata{})
 }
 

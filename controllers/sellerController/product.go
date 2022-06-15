@@ -36,6 +36,7 @@ func Getproductid(c *fiber.Ctx) error {
 	db.Find(&product, id)
 	return c.JSON(product)
 }	
+
 func Deleteproduct(c *fiber.Ctx) error {
 	db := database.DB
 	id := c.Params("id")

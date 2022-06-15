@@ -10,5 +10,5 @@ func Productroute(app *fiber.App){
 	app.Post("/createProducts",sellercontroller.Postproduct)
 	app.Get("/getProductByid/:id",sellercontroller.Getproductid)
 	app.Delete("/deleteProduct/:id",sellercontroller.Deleteproduct)
-	app.Put("/updateProduct",sellercontroller.Updateproduct)
+	app.Put("/updateProduct/:id",sellercontroller.Updateproduct)
 }
