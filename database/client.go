@@ -11,7 +11,7 @@ import (
 var DB *gorm.DB
 
 func Connect() {
-	dsn := "root:Thilina1999@@tcp(127.0.0.1:3306)/test24?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:Sehajini97.@tcp(127.0.0.1:3306)/test1?charset=utf8mb4&parseTime=True&loc=Local"
 	connection, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -23,6 +23,7 @@ func Connect() {
 	connection.AutoMigrate(&models.User{}, &models.PasswordReset{})
 	connection.AutoMigrate(&adminData.Category{})
 	connection.AutoMigrate(&sellerData.Productdata{})
+	connection.AutoMigrate(&adminData.Role{})
 	
 }
 

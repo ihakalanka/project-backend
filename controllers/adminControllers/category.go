@@ -1,4 +1,5 @@
 package admincontrollers
+
 import (
 	"github.com/gofiber/fiber/v2"
 	"strconv"
