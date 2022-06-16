@@ -10,9 +10,9 @@ func Route(app *fiber.App) {
 	app.Post("/api/login", controllers.Login)
 	app.Post("/api/forgot", controllers.Forgot)
 	app.Post("/api/reset", controllers.Reset)
-	//app.Post("/api/r", controllers.CheckRole)
 
 	app.Use(controllers.VerifyToken)
 
 	app.Post("/api/logout", controllers.Logout)
+	app.Get("/api/user", controllers.Buyer, controllers.User)
 }

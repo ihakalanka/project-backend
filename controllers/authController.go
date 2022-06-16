@@ -330,3 +330,25 @@ func Buyer(c *fiber.Ctx) error {
 		})
 	}
 }
+func User(c *fiber.Ctx) error {
+	token := c.Get("Authorization")
+
+	tokenArray := strings.Split(token, "Bearer ")
+	a := strings.Join(tokenArray, " ")
+	to := strings.TrimSpace(a)
+
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(to, claims, keyFunc)
+
+	if err != nil {
+		c.Status(fiber.StatusUnauthorized)
+		return c.JSON(fiber.Map{
+			"message": "unauthenticated",
+		})
+	}
+
+	var user models.User
+	database.DB.Find(&user, claims["Id"])
+
+	return c.JSON(user)
+}
