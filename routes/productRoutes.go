@@ -9,7 +9,7 @@ import (
 func Productroute(app *fiber.App) {
 	app.Use(controllers.VerifyToken)
 
-	app.Get("/api/getProducts", sellercontroller.Getproduct)
+	app.Get("/getProducts", sellercontroller.Getproduct)
 	app.Post("/createProducts", sellercontroller.Postproduct)
 	app.Get("/getProductByid/:id", sellercontroller.Getproductid)
 	app.Delete("/deleteProduct/:id", sellercontroller.Deleteproduct)
