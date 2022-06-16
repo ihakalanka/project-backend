@@ -272,3 +272,34 @@ func Admin(c *fiber.Ctx) error {
 		})
 	}
 }
+
+func Seller(c *fiber.Ctx) error {
+	token := c.Get("Authorization")
+
+	tokenArray := strings.Split(token, "Bearer ")
+	a := strings.Join(tokenArray, " ")
+	to := strings.TrimSpace(a)
+
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(to, claims, keyFunc)
+
+	if err != nil {
+		return c.Status(fiber.StatusGatewayTimeout).JSON(fiber.Map{
+			"status":  "error",
+			"message": "token expired",
+		})
+	}
+
+	if claims["Role"] == "seller" || claims["Role"] == "admin" {
+		return c.Next()
+	} else if claims["Role"] == "client" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  "unauthorized",
+			"message": "you are not an admin or seller, you are not allowed to access this",
+		})
+	} else {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status": "unauthorized",
+		})
+	}
+}
