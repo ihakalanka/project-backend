@@ -238,12 +238,37 @@ func VerifyToken(c *fiber.Ctx) error {
 			"message": "There is an error in finding email method",
 		})
 	}
-	return c.JSON(fiber.Map{
-		"status": "true",
-	})
+	return c.Next()
 }
 
 func keyFunc(*jwt.Token) (interface{}, error) {
 	SecretKey := os.Getenv("SECRETKEY")
 	return []byte(SecretKey), nil
+}
+
+func Admin(c *fiber.Ctx) error {
+	token := c.Get("Authorization")
+
+	tokenArray := strings.Split(token, "Bearer ")
+	a := strings.Join(tokenArray, " ")
+	to := strings.TrimSpace(a)
+
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(to, claims, keyFunc)
+
+	if err != nil {
+		return c.Status(fiber.StatusGatewayTimeout).JSON(fiber.Map{
+			"status":  "error",
+			"message": "token expired",
+		})
+	}
+
+	if claims["Role"] == "admin" {
+		return c.Next()
+	} else {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  "unauthorized",
+			"message": "you are not an admin, you are not allowed to access this",
+		})
+	}
 }

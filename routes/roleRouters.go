@@ -8,10 +8,11 @@ import (
 
 func Roleroute(app *fiber.App) {
 	app.Use(controllers.VerifyToken)
+	//app.Use(controllers.Admin)
 
-	app.Get("/getRole", admincontrollers.Getrole)
-	app.Post("/createRole", admincontrollers.Postrole)
-	app.Get("/getRoleId/:id", admincontrollers.Getroleid)
-	app.Delete("/deleteRole/:id", admincontrollers.Deleterole)
-	app.Put("updateRole/:id", admincontrollers.Updaterole)
+	app.Get("/getRole", controllers.Admin, admincontrollers.Getrole)
+	app.Post("/createRole", controllers.Admin, admincontrollers.Postrole)
+	app.Get("/getRoleId/:id", controllers.Admin, admincontrollers.Getroleid)
+	app.Delete("/deleteRole/:id", controllers.Admin, admincontrollers.Deleterole)
+	app.Put("updateRole/:id", controllers.Admin, admincontrollers.Updaterole)
 }
