@@ -5,10 +5,10 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"main.go/models"
-	"os"
 	"main.go/models/adminData"
 	"main.go/models/sellerData"
 	"main.go/models/customerData"
+	"os"
 )
 
 var DB *gorm.DB
@@ -32,4 +32,5 @@ func Connect() {
 	connection.AutoMigrate(&customerData.WishlistData{})
 	
 }
+
 
