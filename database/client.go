@@ -29,6 +29,7 @@ func Connect() {
 	connection.AutoMigrate(&sellerData.Productdata{})
 	connection.AutoMigrate(&adminData.Role{})
 	connection.AutoMigrate(&customerData.Cart{})
+	connection.AutoMigrate(&customerData.WishlistData{})
 	
 }
 
