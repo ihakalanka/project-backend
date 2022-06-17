@@ -187,6 +187,7 @@ func Login(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message": "success",
+		"data":    tokenString,
 	})
 }
 
@@ -205,9 +206,14 @@ func Logout(c *fiber.Ctx) error {
 }
 
 func VerifyToken(c *fiber.Ctx) error {
-	token := c.Cookies("jwt")
+	token := c.Get("Authorization")
+
+	tokenArray := strings.Split(token, "Bearer ")
+	a := strings.Join(tokenArray, " ")
+	to := strings.TrimSpace(a)
+
 	claims := jwt.MapClaims{}
-	_, err := jwt.ParseWithClaims(token, claims, keyFunc)
+	_, err := jwt.ParseWithClaims(to, claims, keyFunc)
 
 	if err != nil {
 		return c.Status(fiber.StatusGatewayTimeout).JSON(fiber.Map{
@@ -232,7 +238,6 @@ func VerifyToken(c *fiber.Ctx) error {
 			"message": "There is an error in finding email method",
 		})
 	}
-
 	return c.Next()
 }
 
@@ -241,17 +246,109 @@ func keyFunc(*jwt.Token) (interface{}, error) {
 	return []byte(SecretKey), nil
 }
 
-func TokenClaims(c *fiber.Ctx) error {
-	tokenString := c.Cookies("jwt")
+func Admin(c *fiber.Ctx) error {
+	token := c.Get("Authorization")
+
+	tokenArray := strings.Split(token, "Bearer ")
+	a := strings.Join(tokenArray, " ")
+	to := strings.TrimSpace(a)
+
 	claims := jwt.MapClaims{}
-	token, err := jwt.ParseWithClaims(tokenString, claims, keyFunc)
+	_, err := jwt.ParseWithClaims(to, claims, keyFunc)
 
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":   err,
-			"message": "Error in token claims method",
+		return c.Status(fiber.StatusGatewayTimeout).JSON(fiber.Map{
+			"status":  "error",
+			"message": "token expired",
 		})
 	}
 
-	return c.JSON(token.Claims)
+	if claims["Role"] == "admin" {
+		return c.Next()
+	} else {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  "unauthorized",
+			"message": "you are not an admin, you are not allowed to access this",
+		})
+	}
+}
+
+func Seller(c *fiber.Ctx) error {
+	token := c.Get("Authorization")
+
+	tokenArray := strings.Split(token, "Bearer ")
+	a := strings.Join(tokenArray, " ")
+	to := strings.TrimSpace(a)
+
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(to, claims, keyFunc)
+
+	if err != nil {
+		return c.Status(fiber.StatusGatewayTimeout).JSON(fiber.Map{
+			"status":  "error",
+			"message": "token expired",
+		})
+	}
+
+	if claims["Role"] == "seller" || claims["Role"] == "admin" {
+		return c.Next()
+	} else if claims["Role"] == "client" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  "unauthorized",
+			"message": "you are not an admin or seller, you are not allowed to access this",
+		})
+	} else {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status": "unauthorized",
+		})
+	}
+}
+
+func Buyer(c *fiber.Ctx) error {
+	token := c.Get("Authorization")
+
+	tokenArray := strings.Split(token, "Bearer ")
+	a := strings.Join(tokenArray, " ")
+	to := strings.TrimSpace(a)
+
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(to, claims, keyFunc)
+
+	if err != nil {
+		return c.Status(fiber.StatusGatewayTimeout).JSON(fiber.Map{
+			"status":  "error",
+			"message": "token expired",
+		})
+	}
+
+	if (claims["Role"] == "admin") || (claims["Role"] == "seller") || (claims["Role"] == "client") {
+		return c.Next()
+	} else {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  "unauthorized",
+			"message": "you are not an admin, seller or client, you are not allowed to access this",
+		})
+	}
+}
+func User(c *fiber.Ctx) error {
+	token := c.Get("Authorization")
+
+	tokenArray := strings.Split(token, "Bearer ")
+	a := strings.Join(tokenArray, " ")
+	to := strings.TrimSpace(a)
+
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(to, claims, keyFunc)
+
+	if err != nil {
+		c.Status(fiber.StatusUnauthorized)
+		return c.JSON(fiber.Map{
+			"message": "unauthenticated",
+		})
+	}
+
+	var user models.User
+	database.DB.Find(&user, claims["Id"])
+
+	return c.JSON(user)
 }
