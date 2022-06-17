@@ -8,7 +8,7 @@ import (
 
 func Productroute(app *fiber.App) {
 	app.Use(controllers.VerifyToken)
-	//app.Use()
+
 
 	app.Get("/getProducts", controllers.Seller, sellercontroller.Getproduct)
 	app.Post("/createProducts", controllers.Seller, sellercontroller.Postproduct)

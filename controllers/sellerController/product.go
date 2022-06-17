@@ -10,7 +10,8 @@ import (
 func Postproduct(c *fiber.Ctx) error {
 		db := database.DB
 		product := new(sellerData.Productdata)
-		if err := c.BodyParser(product); err != nil {
+		err := c.BodyParser(product)
+		if err != nil {
 			return c.JSON(fiber.Map{
 				"status":  "error",
 				"message": "Error",
@@ -31,7 +32,7 @@ func Getproduct(c *fiber.Ctx) error {
 
 func Getproductid(c *fiber.Ctx) error {
 	db := database.DB
-	id := c.Params(":id")
+	id := c.Params("id")
 	var product sellerData.Productdata
 	db.Find(&product, id)
 	return c.JSON(product)
@@ -53,6 +54,7 @@ func Deleteproduct(c *fiber.Ctx) error {
 			"message": "Product data deleted",
 		})	
 }
+
 func Updateproduct(c *fiber.Ctx) error {
 	db := database.DB
 	var product sellerData.Productdata
@@ -72,7 +74,7 @@ func Updateproduct(c *fiber.Ctx) error {
 		db.Save(&product)
 			return c.JSON(fiber.Map{
 			"status":  "success",
-			"message": "category found",
+			"message": "cart found",
 			"error": err,
 			"data":  product,
 		})

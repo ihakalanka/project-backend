@@ -7,8 +7,9 @@ import (
 )
 
 func Categoryroute(app *fiber.App) {
+	
 	app.Use(controllers.VerifyToken)
-	//app.Use()
+	
 
 	app.Get("/getCategory", controllers.Admin, admincontrollers.Getcat)
 	app.Post("/createCategory", controllers.Admin, admincontrollers.Postcat)

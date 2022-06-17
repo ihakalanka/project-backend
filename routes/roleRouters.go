@@ -7,8 +7,9 @@ import (
 )
 
 func Roleroute(app *fiber.App) {
+	
 	app.Use(controllers.VerifyToken)
-	//app.Use(controllers.Admin)
+	
 
 	app.Get("/getRole", controllers.Admin, admincontrollers.Getrole)
 	app.Post("/createRole", controllers.Admin, admincontrollers.Postrole)
