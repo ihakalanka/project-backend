@@ -67,7 +67,15 @@ func Deletecart(c *fiber.Ctx) error {
 func Getcart(c *fiber.Ctx) error {
 	db := database.DB
 	var cart []customerData.Cart
-	db.Find(&cart)
+	id := c.Params("id")
+		err := db.Find(&cart, "user_id = ?", id).Error
+		if err != nil {
+			return c.JSON(fiber.Map{
+				"status":  "error",
+				"message": "error in get data in cart",
+			})
+		}
 	
 	return c.JSON(cart)
 }
+
