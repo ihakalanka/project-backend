@@ -91,10 +91,22 @@ func ViewAverageRating(c *fiber.Ctx) error {
 
 	average := sum / length
 
-	return c.JSON(fiber.Map{
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"noOfUsers":     length,
 		"sumOfRating":   sum,
 		"averageRating": average,
+	})
+}
+
+func ViewAllReviewsByItem(c *fiber.Ctx) error {
+	var review []customerData.Review
+
+	id := c.Params("id")
+
+	database.DB.Find(&review, "prod_id = ?", id)
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"data": review,
 	})
 }
 
