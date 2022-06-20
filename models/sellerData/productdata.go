@@ -17,3 +17,7 @@ type Productdata struct {
 	Productprice int                `json:"productprice"`
 	Productquantity int             `json:"productquantity"`
 }
+
+type ProductCount struct{
+	CountProduct int `json:"countproduct"`
+}

@@ -17,3 +17,12 @@ type PasswordReset struct {
 	Email string
 	Token string `gorm:"unique"`
 }
+
+type Count struct{
+	CountUser int `json:"countuser"`
+}
+
+// type UserCount struct{
+// 	CountSeller int `json:"countseller"`
+ 	// CountCustomer int `json:"countcustomer"`
+// }
