@@ -95,6 +95,7 @@ func ViewAverageRating(c *fiber.Ctx) error {
 		"noOfUsers":     length,
 		"sumOfRating":   sum,
 		"averageRating": average,
+		"message":       "success",
 	})
 }
 
@@ -106,7 +107,8 @@ func ViewAllReviewsByItem(c *fiber.Ctx) error {
 	database.DB.Find(&review, "prod_id = ?", id)
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"data": review,
+		"data":    review,
+		"message": "success",
 	})
 }
 
