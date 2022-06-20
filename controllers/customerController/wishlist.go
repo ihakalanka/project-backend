@@ -40,10 +40,16 @@ func Deletelist(c *fiber.Ctx) error {
 			"message": "list data deleted",
 		})	
 }
-func Getlist(c *fiber.Ctx) error {
+func GetlistbyUserId(c *fiber.Ctx) error {
 	db := database.DB
 	var list []customerData.WishlistData
-	db.Find(&list)
-	
+	id := c.Params("id")
+		err := db.Find(&list, "user_id = ?", id).Error
+		if err != nil {
+			return c.JSON(fiber.Map{
+				"status":  "error",
+				"message": "error in get data in cart",
+			})
+		}
 	return c.JSON(list)
 }

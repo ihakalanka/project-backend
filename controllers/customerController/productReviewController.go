@@ -77,7 +77,9 @@ func keyFunc(*jwt.Token) (interface{}, error) {
 
 /*func ViewReview(c *fiber.Ctx) error {
 
-}
+}*/
+
+/*
 
 func UpdateReview(c *fiber.Ctx) error {
 

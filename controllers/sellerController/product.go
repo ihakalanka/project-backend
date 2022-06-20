@@ -13,7 +13,7 @@ func Postproduct(c *fiber.Ctx) error {
 		err := c.BodyParser(product)
 		if err != nil {
 			return c.JSON(fiber.Map{
-				"status":  "error",
+				"status":  201,
 				"message": "Error",
 				"data":    err,
 			})
@@ -74,8 +74,21 @@ func Updateproduct(c *fiber.Ctx) error {
 		db.Save(&product)
 			return c.JSON(fiber.Map{
 			"status":  "success",
-			"message": "cart found",
+			"message": "Product found",
 			"error": err,
 			"data":  product,
 		})
+}
+func GetProductByUserId(c *fiber.Ctx) error {
+	db := database.DB
+	id := c.Params("id")
+	var product []sellerData.Productdata
+	err := db.Find(&product, "user_id = ?", id).Error
+		if err != nil {
+			return c.JSON(fiber.Map{
+				"status":  "error",
+				"message": "error in delete Product",
+			})
+		}
+	return c.JSON(product)
 }
