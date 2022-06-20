@@ -3,7 +3,6 @@ package merchantcontroller
 import (
 	"fmt"
 	"strconv"
-
 	"github.com/gofiber/fiber/v2"
 	"main.go/database"
 	"main.go/models/merchantData"
@@ -35,8 +34,14 @@ func GetMerchant(c *fiber.Ctx) error {
 func GetMerchantid(c *fiber.Ctx) error{
 	db := database.DB
 	id := c.Params("id")
-	var merchant merchantData.Merchantdata
-	db.Find(&merchant, id)
+
+	var merchant []merchantData.Merchantdata
+	err := db.Find(&merchant,"userid = ?",id).Error
+	if err != nil{
+		return c.JSON(fiber.Map{
+			"error":err,
+		})
+	}
 	return c.JSON(merchant)
 }
 

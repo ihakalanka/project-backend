@@ -12,3 +12,4 @@ func Productroute(app *fiber.App){
 	app.Delete("/deleteProduct/:id",sellercontroller.Deleteproduct)
 	app.Put("/updateProduct/:id",sellercontroller.Updateproduct)
 }
+
