@@ -75,9 +75,28 @@ func keyFunc(*jwt.Token) (interface{}, error) {
 	return []byte(SecretKey), nil
 }
 
-/*func ViewReview(c *fiber.Ctx) error {
+func ViewAverageRating(c *fiber.Ctx) error {
+	var review []customerData.Review
 
-}*/
+	id := c.Params("id")
+
+	database.DB.Find(&review, "prod_id = ?", id)
+
+	length := len(review)
+
+	sum := 0
+	for i := 0; i < length; i++ {
+		sum += review[i].Rating
+	}
+
+	average := sum / length
+
+	return c.JSON(fiber.Map{
+		"noOfUsers":     length,
+		"sumOfRating":   sum,
+		"averageRating": average,
+	})
+}
 
 /*
 

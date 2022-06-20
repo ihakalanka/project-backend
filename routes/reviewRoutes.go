@@ -9,5 +9,6 @@ import (
 func ReviewRoutes(app *fiber.App) {
 	app.Use(controllers.VerifyToken)
 
-	app.Post("/api/createreview", customerController.CreateReview)
+	app.Post("/api/createReview", customerController.CreateReview)
+	app.Get("/api/getAverageRating/:id", customerController.ViewAverageRating)
 }
