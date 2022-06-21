@@ -12,4 +12,5 @@ func ReviewRoutes(app *fiber.App) {
 	app.Post("/api/createReview", customerController.CreateReview)
 	app.Get("/api/getAverageRating/:id", customerController.ViewAverageRating)
 	app.Get("/api/getAllReviewsByItem/:id", customerController.ViewAllReviewsByItem)
+	app.Put("/api/updateReviewsByItem/:id", customerController.UpdateReview)
 }

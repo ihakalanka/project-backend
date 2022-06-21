@@ -7,6 +7,7 @@ import (
 	"main.go/models"
 	"main.go/models/customerData"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -112,12 +113,74 @@ func ViewAllReviewsByItem(c *fiber.Ctx) error {
 	})
 }
 
-/*
-
 func UpdateReview(c *fiber.Ctx) error {
+	var review customerData.Review
 
+	id := c.Params("id")
+
+	err := c.BodyParser(&review)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  400,
+			"message": "Recheck your inputs",
+			"data":    err,
+		})
+	}
+
+	review.ProdId, err = strconv.Atoi(id)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  400,
+			"message": "Error in id conversion function",
+			"data":    err,
+		})
+	}
+
+	token := c.Get("Authorization")
+
+	tokenArray := strings.Split(token, "Bearer ")
+	a := strings.Join(tokenArray, " ")
+	to := strings.TrimSpace(a)
+
+	claims := jwt.MapClaims{}
+	_, err = jwt.ParseWithClaims(to, claims, keyFunc)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": err,
+		})
+	}
+
+	var user customerData.Review
+	email, _ := claims["Email"]
+
+	if err := database.DB.Find(&user, "user_email = ? AND prod_id = ?", email, review.ProdId).Error; err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "Error",
+			"message": "There is an error in finding email method",
+		})
+	}
+
+	if (user.UserEmail == email) && (review.ProdId == user.Id) {
+		review = customerData.Review{
+			ProdId:    user.ProdId,
+			Name:      user.Name,
+			Rating:    review.Rating,
+			Comment:   review.Comment,
+			UserEmail: user.UserEmail,
+		}
+	}
+
+	database.DB.Where("prod_id = ? AND user_email = ?", id, email).Updates(&review)
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"data":    review,
+		"message": "success",
+	})
 }
 
+/*
 func DeleteReview(c *fiber.Ctx) error {
 
 }
