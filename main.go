@@ -26,6 +26,7 @@ func main() {
 	routes.Route(app)
 	routes.ViewProdRoutes(app)
 	app.Use(controllers.VerifyToken)
+	routes.UserRoutes(app)
 	routes.Categoryroute(app)
 	routes.Productroute(app)
 	routes.Roleroute(app)
