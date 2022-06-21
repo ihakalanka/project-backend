@@ -31,12 +31,25 @@ func GetMerchant(c *fiber.Ctx) error {
 	return c.JSON(merchant)
 }
 
-func GetMerchantid(c *fiber.Ctx) error{
+func GetMerchantByUserid(c *fiber.Ctx) error{
 	db := database.DB
 	id := c.Params("id")
 
 	var merchant []merchantData.Merchantdata
 	err := db.Find(&merchant,"userid = ?",id).Error
+	if err != nil{
+		return c.JSON(fiber.Map{
+			"error":err,
+		})
+	}
+	return c.JSON(merchant)
+}
+func GetMerchantid(c *fiber.Ctx) error{
+	db := database.DB
+	id := c.Params("id")
+
+	var merchant merchantData.Merchantdata
+	err := db.Find(&merchant,"id = ?",id).Error
 	if err != nil{
 		return c.JSON(fiber.Map{
 			"error":err,

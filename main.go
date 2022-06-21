@@ -19,12 +19,15 @@ func main() {
 	 
 	app.Use(cors.New(cors.Config{
 		AllowCredentials: true,
+		AllowOrigins: "*",
 	}))
 	routes.Route(app)
 	routes.Categoryroute(app)
 	routes.Productroute(app)
 	routes.Roleroute(app)
 	routes.Merchantroute(app)
+	routes.Cartroute(app)
+	routes.WishListroute(app)
 
 	port := os.Getenv("PORT")
 	log.Fatal(app.Listen(port))

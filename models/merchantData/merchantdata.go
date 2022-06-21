@@ -16,5 +16,5 @@ type Merchantdata struct {
 	ProductDescription        string `json:"productdescription"`
 	AverageProductValue       int    `json:"averageproductvalue"`
 	CompanyLogourl            string `json:"companylogourl"`
-	Userid                    int `json:"userid"`
+	Userid                    int    `json:"userid"`
 }
