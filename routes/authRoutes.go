@@ -13,7 +13,4 @@ func Route(app *fiber.App) {
 	app.Post("/api/forgot", controllers.Forgot)
 	app.Post("/api/reset", controllers.Reset)
 
-	app.Use(controllers.VerifyToken)
-
-	app.Get("/api/user", controllers.User)
 }

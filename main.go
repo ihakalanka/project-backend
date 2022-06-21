@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"log"
+	"main.go/controllers"
 	"main.go/database"
 	"main.go/routes"
 	"os"
@@ -23,6 +24,8 @@ func main() {
 	}))
 
 	routes.Route(app)
+	routes.ViewProdRoutes(app)
+	app.Use(controllers.VerifyToken)
 	routes.Categoryroute(app)
 	routes.Productroute(app)
 	routes.Roleroute(app)
