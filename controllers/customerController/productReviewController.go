@@ -180,8 +180,23 @@ func UpdateReview(c *fiber.Ctx) error {
 	})
 }
 
-/*
 func DeleteReview(c *fiber.Ctx) error {
+	var review customerData.Review
 
+	id := c.Params("id")
+
+	err := database.DB.Find(&review, "id = ?", id).Error
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  400,
+			"message": "error in delete review",
+		})
+	}
+
+	database.DB.Unscoped().Delete(&review)
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"status":  201,
+		"message": "review deleted successfully",
+	})
 }
-*/
