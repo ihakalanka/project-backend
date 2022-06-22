@@ -8,6 +8,8 @@ import (
 	"main.go/models/adminData"
 	"main.go/models/sellerData"
 	"main.go/models/customerData"
+	"main.go/models/companyData"
+	
 	"os"
 )
 
@@ -30,6 +32,7 @@ func Connect() {
 	connection.AutoMigrate(&adminData.Role{})
 	connection.AutoMigrate(&customerData.Cart{})
 	connection.AutoMigrate(&customerData.WishlistData{})
+	connection.AutoMigrate(&CompanyData.CompanyData{})
 	
 }
 

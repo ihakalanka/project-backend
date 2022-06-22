@@ -28,6 +28,7 @@ func main() {
 	routes.Roleroute(app)
 	routes.Cartroute(app)
 	routes.WishListroute(app)
+	routes.companyRoutes(app)
 
 	port := os.Getenv("PORT")
 	log.Fatal(app.Listen(port))
