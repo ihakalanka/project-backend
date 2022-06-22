@@ -14,4 +14,6 @@ func Cartroute(app *fiber.App) {
 	app.Put("/updateCart/:id", customerController.Updatecart)
 	app.Delete("/deleteCart/:id",customerController.Deletecart)
 	app.Get("/getCartByUserId/:id", customerController.Getcart)
+	app.Delete("/deleteCartByUserId/:id", customerController.DeleteCartByUserId)
+
 }
