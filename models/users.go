@@ -13,6 +13,7 @@ type User struct {
 }
 
 type PasswordReset struct {
+	gorm.Model
 	Id    uint
 	Email string
 	Token string `gorm:"unique"`
