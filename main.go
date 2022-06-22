@@ -4,9 +4,10 @@ import (
 	"log"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
+	"main.go/controllers"
 	"main.go/database"
 	"main.go/routes"
-	"github.com/joho/godotenv"
 	"os"
 )
 
@@ -21,13 +22,19 @@ func main() {
 		AllowCredentials: true,
 		AllowOrigins: "*",
 	}))
+
 	routes.Route(app)
+	routes.SearchRoutes(app)
+	routes.ViewProdRoutes(app)
+	app.Use(controllers.VerifyToken)
+	routes.UserRoutes(app)
 	routes.Categoryroute(app)
 	routes.Productroute(app)
 	routes.Roleroute(app)
 	routes.Merchantroute(app)
 	routes.Cartroute(app)
 	routes.WishListroute(app)
+	routes.ReviewRoutes(app)
 
 	port := os.Getenv("PORT")
 	log.Fatal(app.Listen(port))

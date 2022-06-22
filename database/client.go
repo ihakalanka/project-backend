@@ -13,6 +13,7 @@ import (
 	"main.go/models/merchantApplicationData"
 	"main.go/models/customerData"
 	
+
 )
 
 var DB *gorm.DB
@@ -37,7 +38,6 @@ func Connect() {
 	connection.AutoMigrate(&merchantApplicationData.MerchantApplicationdata{})
 	connection.AutoMigrate(&customerData.Cart{})
 	connection.AutoMigrate(&customerData.WishlistData{})
-	
+	connection.AutoMigrate(&customerData.Review{})
+
 }
-
-
