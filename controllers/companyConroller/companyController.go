@@ -73,3 +73,4 @@ func Deletecat(c *fiber.Ctx) error {
 			"message": "Company data deleted",
 		})	
 }
+
