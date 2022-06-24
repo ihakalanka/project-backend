@@ -2,8 +2,9 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"main.go/controllers"
 	"main.go/controllers/sellerController"
+	"main.go/controllers"
+
 )
 
 func Productroute(app *fiber.App) {
@@ -13,3 +14,4 @@ func Productroute(app *fiber.App) {
 	app.Put("/updateProduct/:id", controllers.Seller, sellercontroller.Updateproduct)
 	app.Get("/getProductByUserId/:id", controllers.Seller, sellercontroller.GetProductByUserId)
 }
+
