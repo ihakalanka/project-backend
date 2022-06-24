@@ -6,10 +6,10 @@ import (
 	"gorm.io/gorm"
 	"main.go/models"
 	"main.go/models/adminData"
+	"main.go/models/companyData"
 	"main.go/models/customerData"
 	"main.go/models/sellerData"
-	"main.go/models/companyData"
-	
+
 	"os"
 )
 
@@ -35,5 +35,5 @@ func Connect() {
 	connection.AutoMigrate(&customerData.Review{})
 
 	connection.AutoMigrate(&CompanyData.CompanyData{})
-	
+
 }

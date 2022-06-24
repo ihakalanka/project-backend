@@ -32,7 +32,7 @@ func Forgot(c *fiber.Ctx) error {
 		email,
 	}
 
-	url := "http://localhost:3000/resetpass/" + token
+	url := "http://localhost:3000/signin/resetpass/" + token
 
 	message := []byte("Click <a href=\"" + url + "\">here</a> to reset your password")
 
@@ -70,6 +70,44 @@ func Reset(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"message": "success",
+	})
+}
+
+func VerifyMail(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	email := data["email"]
+	token := RandStingRunes(12)
+
+	passwordReset := models.PasswordReset{
+		Email: email,
+		Token: token,
+	}
+
+	database.DB.Create(&passwordReset)
+
+	from := "admin@example.com"
+
+	to := []string{
+		email,
+	}
+
+	url := "http://localhost:3000/signin/" + token
+
+	message := []byte("Click <a href=\"" + url + "\">here</a> to verify your email")
+
+	err := smtp.SendMail("0.0.0.0:1025", nil, from, to, message)
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "check your email",
 	})
 }
 
