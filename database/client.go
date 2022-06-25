@@ -6,10 +6,12 @@ import (
 	"gorm.io/gorm"
 	"main.go/models"
 	"main.go/models/adminData"
-	"main.go/models/companyData"
+	CompanyData "main.go/models/companyData"
 	"main.go/models/customerData"
+	"main.go/models/merchantApplicationData"
+	"main.go/models/merchantData"
+	"main.go/models/privilegeData"
 	"main.go/models/sellerData"
-
 	"os"
 )
 
@@ -30,6 +32,9 @@ func Connect() {
 	connection.AutoMigrate(&adminData.Category{})
 	connection.AutoMigrate(&sellerData.Productdata{})
 	connection.AutoMigrate(&adminData.Role{})
+	connection.AutoMigrate(&merchantData.Merchantdata{})
+	connection.AutoMigrate(&privilegeData.Privilegedata{})
+	connection.AutoMigrate(&merchantApplicationData.MerchantApplicationdata{})
 	connection.AutoMigrate(&customerData.Cart{})
 	connection.AutoMigrate(&customerData.WishlistData{})
 	connection.AutoMigrate(&customerData.Review{})

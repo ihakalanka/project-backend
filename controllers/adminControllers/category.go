@@ -13,7 +13,11 @@ func Getcat(c *fiber.Ctx) error {
 	var category []adminData.Category
 	db.Find(&category)
 	
-	return c.JSON(category)
+	return c.JSON(fiber.Map{
+				"status":  200,
+				"message": "category add succesfully",
+				"data":category,
+			})
 }
 
 func Postcat(c *fiber.Ctx) error {
@@ -33,19 +37,23 @@ func Postcat(c *fiber.Ctx) error {
 		err = db.Find(&category1, "category_name = ?", name).Error
 		if err != nil {
 			return c.JSON(fiber.Map{
-				"status":  "error",
-				"message": "error in delete category",
+				"status":  404,
+				"message": "error in  category",
 			})
 		}
 		
 		if name == category1.CategoryName {
 			return c.JSON(fiber.Map{
-				"status":  "error",
-				"message": "Duplicate role available for category",
+				"status":  404,
+				"message": "Duplicate category available ",
 			})
 		}
 		db.Create(&category)
-		return c.JSON(category)
+		return c.JSON(fiber.Map{
+				"status":  200,
+				"message": "category add successfull",
+				"data":category,
+			})
 	}
 
 func Getcatid(c *fiber.Ctx) error {
@@ -53,7 +61,11 @@ func Getcatid(c *fiber.Ctx) error {
 	id := c.Params("id")
 	var category adminData.Category
 	db.Find(&category, id)
-	return c.JSON(category)
+	return c.JSON(fiber.Map{
+				"status":  200,
+				"message": "category available",
+				"data":category,
+			})
 }	
 
 func Deletecat(c *fiber.Ctx) error {
@@ -86,10 +98,26 @@ func Updatecat(c *fiber.Ctx) error {
 				"data":    err,
 			})
 		}
+		var category1 adminData.Category
+		name := category.CategoryName
+		err = db.Find(&category1, "category_name = ?", name).Error
+		if err != nil {
+			return c.JSON(fiber.Map{
+				"status":  404,
+				"message": "error in  category",
+			})
+		}
+		
+		if name == category1.CategoryName {
+			return c.JSON(fiber.Map{
+				"status":  404,
+				"message": "Can not update ,Duplicate category available ",
+			})
+		}
 		category.Id,err = strconv.Atoi(id)
 		if err != nil {
 			return c.JSON(fiber.Map{
-				"status":  "error",
+				"status":  404,
 				"message": "Review your inputs",
 				"data":    err,
 			})
@@ -98,8 +126,8 @@ func Updatecat(c *fiber.Ctx) error {
 
 		db.Save(&category)
 			return c.JSON(fiber.Map{
-			"status":  "success",
-			"message": "category found",
+			"status":  200,
+			"message": "category updated",
 			"error": err,
 			"data":  category,
 		})
