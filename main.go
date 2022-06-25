@@ -34,6 +34,7 @@ func main() {
 	routes.Merchantroute(app)
 	routes.Cartroute(app)
 	routes.WishListroute(app)
+	routes.Dashboard(app)
 	routes.ReviewRoutes(app)
 
 	port := os.Getenv("PORT")
