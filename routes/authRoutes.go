@@ -13,4 +13,6 @@ func Route(app *fiber.App) {
 	app.Post("/api/forgot", controllers.Forgot)
 	app.Post("/api/reset", controllers.Reset)
 
+	app.Post("/api/verify", controllers.VerifyMail)
+
 }

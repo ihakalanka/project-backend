@@ -36,6 +36,7 @@ func main() {
 	routes.WishListroute(app)
 	routes.Dashboard(app)
 	routes.ReviewRoutes(app)
+	routes.CompanyRoutes(app)
 
 	port := os.Getenv("PORT")
 	log.Fatal(app.Listen(port))
