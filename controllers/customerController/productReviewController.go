@@ -1,12 +1,15 @@
 package customerController
 
 import (
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"main.go/database"
 	"main.go/models"
 	"main.go/models/customerData"
+	"main.go/models/sellerData"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -37,7 +40,7 @@ func CreateReview(c *fiber.Ctx) error {
 	var user customerData.Review
 	email, _ := claims["Email"]
 
-	if err := database.DB.Find(&user, "user_email = ?", email).Error; err != nil {
+	if err := database.DB.Find(&user, "user_email = ? AND prod_id = ?", email, data.ProdId).Error; err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "Error",
 			"message": "There is an error in finding email method",
@@ -55,6 +58,7 @@ func CreateReview(c *fiber.Ctx) error {
 	database.DB.Find(&name, "email = ?", email)
 
 	review := customerData.Review{
+		UserId:    int(name.Id),
 		ProdId:    data.ProdId,
 		Name:      name.FirstName + " " + name.LastName,
 		Rating:    data.Rating,
@@ -75,7 +79,7 @@ func keyFunc(*jwt.Token) (interface{}, error) {
 	return []byte(SecretKey), nil
 }
 
-func ViewAverageRating(c *fiber.Ctx) error {
+func SetAverageRating(c *fiber.Ctx) error {
 	var review []customerData.Review
 
 	id := c.Params("id")
@@ -95,6 +99,25 @@ func ViewAverageRating(c *fiber.Ctx) error {
 	} else {
 		average = sum / length
 	}
+
+	var sell sellerData.Productdata
+
+	database.DB.Find(&sell, "id = ?", id)
+
+	averageRate := sellerData.Productdata{
+		Id:              sell.Id,
+		ProductTitle:    sell.ProductTitle,
+		ProductSubtitle: sell.ProductSubtitle,
+		CategoryName:    sell.CategoryName,
+		Imageurl:        sell.Imageurl,
+		Description:     sell.Description,
+		Productprice:    sell.Productprice,
+		Productquantity: sell.Productquantity,
+		UserId:          sell.UserId,
+		AverageRate:     average,
+	}
+
+	database.DB.Save(&averageRate)
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"noOfUsers":     length,
@@ -122,7 +145,35 @@ func DeleteReview(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
-	err := database.DB.Find(&review, "prod_id = ?", id).Error
+	token := c.Get("Authorization")
+
+	tokenArray := strings.Split(token, "Bearer ")
+	a := strings.Join(tokenArray, " ")
+	to := strings.TrimSpace(a)
+
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(to, claims, keyFunc)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": err,
+		})
+	}
+
+	var user customerData.Review
+	email, _ := claims["Email"]
+
+	if err := database.DB.Find(&user, "user_email = ? AND prod_id = ?", email, id).Error; err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "Error",
+			"message": "There is an error in finding email method",
+		})
+	}
+
+	fmt.Println(id, user.ProdId, user.UserEmail, email)
+
+	err = database.DB.Find(&review, "prod_id = ?", id).Error
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  400,
@@ -130,7 +181,16 @@ func DeleteReview(c *fiber.Ctx) error {
 		})
 	}
 
-	database.DB.Unscoped().Delete(&review)
+	id1, _ := strconv.Atoi(id)
+
+	if id1 == user.ProdId && review.UserEmail == user.UserEmail {
+		database.DB.Unscoped().Delete(&review)
+	} else {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"data":    err,
+			"message": "error",
+		})
+	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"status":  201,

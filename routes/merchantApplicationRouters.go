@@ -2,12 +2,12 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"main.go/controllers/merchantapplicationcontroller"
 	"main.go/controllers"
+	"main.go/controllers/merchantapplicationcontroller"
 )
 
-func MerchantApplicationroute(app *fiber.App){
-	app.Use(controllers.VerifyToken)
-	app.Get("/getMerchantApplication",controllers.Seller,merchantapplicationcontroller.GetMerchantApplication)
-	 
+func MerchantApplicationroute(app *fiber.App) {
+
+	app.Get("/getMerchantApplication", controllers.Seller, merchantapplicationcontroller.GetMerchantApplication)
+
 }

@@ -7,5 +7,5 @@ import (
 
 func ReviewRoutes(app *fiber.App) {
 	app.Post("/api/createReview", customerController.CreateReview)
-	app.Delete("api/deleteReviewByItem/:id", customerController.DeleteReview)
+	app.Delete("/api/deleteReviewByItem/:id", customerController.DeleteReview)
 }
