@@ -53,7 +53,7 @@ func Postrole(c *fiber.Ctx) error {
 
 func Getroleid(c *fiber.Ctx) error {
 	db := database.DB
-	id := c.Params(":id")
+	id := c.Params("id")
 	var role adminData.Role
 	db.Find(&role, id)
 	return c.JSON(role)

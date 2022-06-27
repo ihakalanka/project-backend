@@ -1,17 +1,21 @@
 package database
 
 import (
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"main.go/models"
 	"main.go/models/adminData"
 	"main.go/models/sellerData"
+	"main.go/models/customerData"
+	"os"
 )
 
 var DB *gorm.DB
 
 func Connect() {
-	dsn := "root:Sehajini97.@tcp(127.0.0.1:3306)/test1?charset=utf8mb4&parseTime=True&loc=Local"
+	godotenv.Load()
+	dsn := os.Getenv("DSN")
 	connection, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -24,6 +28,9 @@ func Connect() {
 	connection.AutoMigrate(&adminData.Category{})
 	connection.AutoMigrate(&sellerData.Productdata{})
 	connection.AutoMigrate(&adminData.Role{})
-	
+	connection.AutoMigrate(&customerData.Cart{})
+	connection.AutoMigrate(&customerData.WishlistData{})
+	connection.AutoMigrate(&adminData.AdminDetails{})
 }
+
 

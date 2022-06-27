@@ -7,9 +7,10 @@ type User struct {
 	Id        uint   `json:"id" gorm:"autoIncrement"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
-	Email     string `gorm:"unique" json:"email"`
+	Email     string `gorm:"unique" json:"email" validate:"email,required"`
 	Password  string `json:"password"`
 	Role      string `json:"role"`
+	Previlage string `json:"previlage"`
 }
 
 type PasswordReset struct {
@@ -21,8 +22,3 @@ type PasswordReset struct {
 type Count struct{
 	CountUser int `json:"countuser"`
 }
-
-// type UserCount struct{
-// 	CountSeller int `json:"countseller"`
- 	// CountCustomer int `json:"countcustomer"`
-// }

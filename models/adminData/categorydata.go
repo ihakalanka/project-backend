@@ -10,3 +10,7 @@ type Category struct{
 	Id int `gorm:"primaryKey" json:"id"`
 	CategoryName string `json:"categoryname"`
 }
+
+type CategoryCount struct{
+	CountCategory int `json:"countcategory"`
+}

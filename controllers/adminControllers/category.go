@@ -18,12 +18,30 @@ func Getcat(c *fiber.Ctx) error {
 
 func Postcat(c *fiber.Ctx) error {
 		db := database.DB
-		category := new(adminData.Category)
-		if err := c.BodyParser(category); err != nil {
+		var category  adminData.Category
+
+		err := c.BodyParser(&category); 
+		if err != nil {
 			return c.JSON(fiber.Map{
 				"status":  "error",
 				"message": "Error",
 				"data":    err,
+			})
+		}
+		var category1 adminData.Category
+		name := category.CategoryName
+		err = db.Find(&category1, "category_name = ?", name).Error
+		if err != nil {
+			return c.JSON(fiber.Map{
+				"status":  "error",
+				"message": "error in delete category",
+			})
+		}
+		
+		if name == category1.CategoryName {
+			return c.JSON(fiber.Map{
+				"status":  "error",
+				"message": "Duplicate role available for category",
 			})
 		}
 		db.Create(&category)
@@ -32,7 +50,7 @@ func Postcat(c *fiber.Ctx) error {
 
 func Getcatid(c *fiber.Ctx) error {
 	db := database.DB
-	id := c.Params(":id")
+	id := c.Params("id")
 	var category adminData.Category
 	db.Find(&category, id)
 	return c.JSON(category)
@@ -69,6 +87,13 @@ func Updatecat(c *fiber.Ctx) error {
 			})
 		}
 		category.Id,err = strconv.Atoi(id)
+		if err != nil {
+			return c.JSON(fiber.Map{
+				"status":  "error",
+				"message": "Review your inputs",
+				"data":    err,
+			})
+		}
 		fmt.Println(err)
 
 		db.Save(&category)
@@ -76,6 +101,6 @@ func Updatecat(c *fiber.Ctx) error {
 			"status":  "success",
 			"message": "category found",
 			"error": err,
-			"data":    category,
+			"data":  category,
 		})
 }
