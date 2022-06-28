@@ -145,7 +145,7 @@ func Login(c *fiber.Ctx) error {
 	if user.Id == 0 {
 		c.Status(fiber.StatusNotFound)
 		return c.JSON(fiber.Map{
-			"message": "user not found",
+			"message": "incorrect password or email",
 		})
 	}
 
@@ -153,7 +153,7 @@ func Login(c *fiber.Ctx) error {
 		c.Status(fiber.StatusBadRequest)
 		return c.JSON(fiber.Map{
 			"status":  "Error",
-			"message": "incorrect password",
+			"message": "incorrect password or email",
 		})
 	}
 

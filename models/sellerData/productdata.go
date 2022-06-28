@@ -14,5 +14,6 @@ type Productdata struct {
 	Description     string `json:"description"`
 	Productprice    int    `json:"productprice"`
 	Productquantity int    `json:"productquantity"`
-	UserId int `json:"userid"`
+	UserId          int    `json:"userid"`
+	AverageRate     int    `json:"averagerate"`
 }

@@ -14,7 +14,7 @@ type User struct {
 
 type PasswordReset struct {
 	gorm.Model
-	Id    uint
-	Email string
+	Id    uint   `json:"id"`
+	Email string `json:"email"`
 	Token string `gorm:"unique"`
 }

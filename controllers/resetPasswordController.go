@@ -16,35 +16,52 @@ func Forgot(c *fiber.Ctx) error {
 		return err
 	}
 
-	email := data["email"]
-	token := RandStingRunes(12)
+	var user models.User
 
-	passwordReset := models.PasswordReset{
-		Email: email,
-		Token: token,
+	if err := database.DB.Find(&user, "email = ?", data["email"]).Error; err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "Error",
+			"message": "There is an error in finding email method",
+		})
 	}
 
-	database.DB.Create(&passwordReset)
+	if user.Email == data["email"] {
 
-	from := "admin@example.com"
+		email := data["email"]
+		token := RandStingRunes(100)
 
-	to := []string{
-		email,
+		passwordReset := models.PasswordReset{
+			Email: email,
+			Token: token,
+		}
+
+		database.DB.Create(&passwordReset)
+
+		from := "admin@example.com"
+
+		to := []string{
+			email,
+		}
+
+		url := "http://localhost:3000/signin/resetpass/" + token
+
+		message := []byte("Click <a href=\"" + url + "\">here</a> to reset your password")
+
+		err := smtp.SendMail("0.0.0.0:1025", nil, from, to, message)
+
+		if err != nil {
+			return err
+		}
+
+		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+			"message": "check your emails",
+		})
+	} else {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "User does not exist",
+		})
 	}
 
-	url := "http://localhost:3000/signin/resetpass/" + token
-
-	message := []byte("Click <a href=\"" + url + "\">here</a> to reset your password")
-
-	err := smtp.SendMail("0.0.0.0:1025", nil, from, to, message)
-
-	if err != nil {
-		return err
-	}
-
-	return c.JSON(fiber.Map{
-		"message": "check your email",
-	})
 }
 
 func Reset(c *fiber.Ctx) error {
@@ -81,11 +98,9 @@ func VerifyMail(c *fiber.Ctx) error {
 	}
 
 	email := data["email"]
-	token := RandStingRunes(12)
 
 	passwordReset := models.PasswordReset{
 		Email: email,
-		Token: token,
 	}
 
 	database.DB.Create(&passwordReset)
@@ -96,7 +111,7 @@ func VerifyMail(c *fiber.Ctx) error {
 		email,
 	}
 
-	url := "http://localhost:3000/signin/" + token
+	url := "http://localhost:3000/signin/"
 
 	message := []byte("Click <a href=\"" + url + "\">here</a> to verify your email")
 
@@ -112,7 +127,7 @@ func VerifyMail(c *fiber.Ctx) error {
 }
 
 func RandStingRunes(n int) string {
-	var letterRunes = []rune("abcdefghijklmnnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	var letterRunes = []rune("0123456789abcdefghijklmnnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 	b := make([]rune, n)
 	for i := range b {
