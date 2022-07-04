@@ -8,6 +8,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"main.go/database"
 	"main.go/models"
+	CompanyData "main.go/models/companyData"
 	"os"
 	"strings"
 	"time"
@@ -353,4 +354,59 @@ func User(c *fiber.Ctx) error {
 	database.DB.Find(&user, claims["Id"])
 
 	return c.JSON(user)
+}
+
+func CompanyRegister(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		c.Status(fiber.StatusBadRequest)
+		return err
+	}
+
+	if err := verifyPassword(data["createpassword"]); err != nil {
+		c.Status(fiber.StatusBadRequest)
+		return err
+	}
+
+	var user1 models.User
+	email := data["emailaddress"]
+
+	if err := database.DB.Find(&user1, "email = ?", email).Error; err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "Error",
+			"message": "There is an error in finding email method",
+		})
+	}
+
+	if user1.Email == email {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  "Error",
+			"message": "You are already used this email address",
+		})
+	}
+
+	cost := 14
+	password, _ := bcrypt.GenerateFromPassword([]byte(data["Password"]), cost)
+	user := models.User{
+		FirstName: data["companyname"],
+		Email:     data["emailaddress"],
+		Role:      "seller",
+		Password:  string(password),
+	}
+
+	company := CompanyData.CompanyData{
+		CompanyName:    data["companyname"],
+		EmailAddress:   data["emailaddress"],
+		CreatePassword: string(password),
+	}
+
+	database.DB.Create(&user)
+	database.DB.Create(&company)
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "success",
+		"data1":   user,
+		"data2":   company,
+	})
 }
