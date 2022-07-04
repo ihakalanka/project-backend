@@ -314,7 +314,7 @@ func SendEmail(c *fiber.Ctx) error {
 	email := data["emailaddress"]
 	name := data["companyname"]
 
-	subject := "Subject: Confirmation\n"
+	subject := "Subject: Congratulations on Creating Your Company!\n"
 
 	godotenv.Load()
 	from := os.Getenv("EMAIL_ADDRESS")
@@ -354,30 +354,30 @@ func SendEmail(c *fiber.Ctx) error {
 		"<div id=\"wrapper\">\n      " +
 		"<header>\n        " +
 		"<div id=\"logo\">\n          " +
-		"<img\n            src=\"logo.png\"\n            alt=\"\"\n          />\n        " +
+		"<img\n            src=\"https://github.com/ihakalanka/project-backend/blob/akalanka/controllers/templates/logo.png?raw=true\"\n            alt=\"\"\n          />\n        " +
 		"</div>\n        " +
 		"<div>\n          " +
 		"<ul id=\"social\">\n            " +
 		"<li>\n              " +
 		"<a href=\"#\" target=\"_blank\"\n                >" +
-		"<img\n                  src=\"facebook.png\"\n                  alt=\"\"\n              />" +
+		"<img\n                  src=\"https://github.com/ihakalanka/project-backend/blob/akalanka/controllers/templates/facebook.png?raw=true\"\n                  alt=\"\"\n              />" +
 		"</a>\n            " +
 		"</li>\n            " +
 		"<li>\n              " +
 		"<a href=\"#\" target=\"_blank\"\n                >" +
-		"<img\n                  src=\"instagram.png\"\n                  alt=\"\"\n              />" +
+		"<img\n                  src=\"https://github.com/ihakalanka/project-backend/blob/akalanka/controllers/templates/instagram.png?raw=true\"\n                  alt=\"\"\n              />" +
 		"</a>\n            " +
 		"</li>\n            " +
 		"<li>\n              " +
 		"<a href=\"#\" target=\"_blank\"\n                >" +
-		"<img\n                  src=\"twitter.png\"\n                  alt=\"\"\n              />" +
+		"<img\n                  src=\"https://github.com/ihakalanka/project-backend/blob/akalanka/controllers/templates/twitter.png?raw=true\"\n                  alt=\"\"\n              />" +
 		"</a>\n            " +
 		"</li>\n          " +
 		"</ul>\n        " +
 		"</div>\n      " +
 		"</header>\n      " +
 		"<div id=\"banner\">\n        " +
-		"<img\n          src=\"https://thumbs.dreamstime.com/z/rainbow-love-heart-background-red-wood-60045149.jpg\"\n          alt=\"\"\n        />\n      " +
+		"<img\n          src=\"https://github.com/ihakalanka/project-backend/blob/akalanka/controllers/templates/image.png?raw=true\"\n          alt=\"\"\n        />\n      " +
 		"</div>\n      " +
 		"<div class=\"one-col\">\n        " +
 		"<h1>" +
