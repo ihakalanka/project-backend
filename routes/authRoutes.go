@@ -16,4 +16,6 @@ func Route(app *fiber.App) {
 	app.Post("/api/verify", controllers.VerifyMail)
 
 	app.Post("/api/companyRegister", controllers.CompanyRegister)
+
+	app.Post("/api/sendEmail", controllers.SendEmail)
 }

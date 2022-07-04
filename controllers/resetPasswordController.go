@@ -301,3 +301,120 @@ func RandStingRunes(n int) string {
 	}
 	return string(b)
 }
+
+func SendEmail(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "body parsing",
+		})
+	}
+
+	email := data["emailaddress"]
+	name := data["companyname"]
+
+	subject := "Subject: Confirmation\n"
+
+	godotenv.Load()
+	from := os.Getenv("EMAIL_ADDRESS")
+
+	to := []string{
+		email,
+	}
+
+	url := "http://localhost:3000/signin/"
+
+	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+
+	body := "<!DOCTYPE html>\n" +
+		"<html lang=\"en\">\n  " +
+		"<head>\n    " +
+		"<meta charset=\"UTF-8\" />\n    " +
+		"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    " +
+		"<title>Document</title>\n    " +
+		"<style>\n      " +
+		"@import url(\"https://fonts.googleapis.com/css2?family=Raleway:ital,wght@1,200&display=swap\");\n\n      " +
+		"* {\n        margin: 0;\n        padding: 0;\n        border: 0;\n      }\n\n      " +
+		"body {\n        font-family: 'Montserrat';\n        background-color: whitesmoke;\n        font-size: 19px;\n        max-width: 800px;\n        margin: 0 auto;\n        padding: 3%;\n      }\n\n      " +
+		"img {\n        max-width: 100%;\n      }\n\n      " +
+		"header {\n        width: 98%;\n      }\n\n      " +
+		"#logo {\n        max-width: 120px;\n        margin: 3% 0 3% 3%;\n        float: left;\n      }\n\n      " +
+		"#wrapper {\n        background-color: #f0f6fb;\n      }\n\n      " +
+		"#social {\n        float: right;\n        margin: 3% 2% 4% 3%;\n        list-style-type: none;\n      }\n\n      " +
+		"#social > li {\n        display: inline;\n      }\n\n      " +
+		"#social > li > a > img {\n        max-width: 35px;\n      }\n\n      " +
+		"h1,\n      p {\n        text-align: center;\n        margin: 3%;\n      }\n      " +
+		".btn {\n        float: right;\n        margin: 0 2% 4% 0;\n        background-color: #B5D6DE;\n        color: #f6faff;\n        text-decoration: none;\n        font-weight: 800;\n        padding: 8px 12px;\n        border-radius: 8px;\n        letter-spacing: 2px;\n      }\n\n      " +
+		"hr {\n        height: 1px;\n        background-color: #303840;\n        clear: both;\n        width: 96%;\n        margin: auto;\n      }\n\n      " +
+		"#contact {\n        text-align: center;\n        padding-bottom: 3%;\n        line-height: 16px;\n        font-size: 12px;\n        color: #303840;\n      }\n    " +
+		"</style>\n  " +
+		"</head>\n  " +
+		"<body>\n    " +
+		"<div id=\"wrapper\">\n      " +
+		"<header>\n        " +
+		"<div id=\"logo\">\n          " +
+		"<img\n            src=\"logo.png\"\n            alt=\"\"\n          />\n        " +
+		"</div>\n        " +
+		"<div>\n          " +
+		"<ul id=\"social\">\n            " +
+		"<li>\n              " +
+		"<a href=\"#\" target=\"_blank\"\n                >" +
+		"<img\n                  src=\"facebook.png\"\n                  alt=\"\"\n              />" +
+		"</a>\n            " +
+		"</li>\n            " +
+		"<li>\n              " +
+		"<a href=\"#\" target=\"_blank\"\n                >" +
+		"<img\n                  src=\"instagram.png\"\n                  alt=\"\"\n              />" +
+		"</a>\n            " +
+		"</li>\n            " +
+		"<li>\n              " +
+		"<a href=\"#\" target=\"_blank\"\n                >" +
+		"<img\n                  src=\"twitter.png\"\n                  alt=\"\"\n              />" +
+		"</a>\n            " +
+		"</li>\n          " +
+		"</ul>\n        " +
+		"</div>\n      " +
+		"</header>\n      " +
+		"<div id=\"banner\">\n        " +
+		"<img\n          src=\"https://thumbs.dreamstime.com/z/rainbow-love-heart-background-red-wood-60045149.jpg\"\n          alt=\"\"\n        />\n      " +
+		"</div>\n      " +
+		"<div class=\"one-col\">\n        " +
+		"<h1>" +
+		"Congratulations on Creating Your Company!" +
+		"</h1>\n\n        " +
+		"<p>\n          Your Company  <b>" +
+		name +
+		"</b> has been added to MiniBell.\n        </p>\n\n        " +
+		"<p>\n          Now you can add products and let our cutomers explore them and buy them.\n        " +
+		"</p>\n\n        " +
+		"<p>" +
+		"<b>\n            Happy Selling!\n          </b>" +
+		"</p>\n\n        <a href=" +
+		url +
+		"" +
+		" class=\"btn\">Add Products</a>\n\n        " +
+		"<hr />\n\n        " +
+		"<footer>\n          " +
+		"<p id=\"contact\">\n            Stay connected <br />\n            help@minibell.com<br />\n            +94 112 783 789 <br />\n          " +
+		"</p>\n        " +
+		"</footer>\n      " +
+		"</div>\n    " +
+		"</div>\n  " +
+		"</body>\n" +
+		"</html>"
+
+	msg := []byte(subject + mime + body)
+
+	err := smtp.SendMail("0.0.0.0:1025", nil, from, to, msg)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "keyFunc",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "check your email",
+	})
+}
